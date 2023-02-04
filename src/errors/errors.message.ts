@@ -4,4 +4,5 @@ export const enum ERROR_MESSAGE {
   TRACK_DOES_NOT_EXIST = "This track doesn't exist.",
   ALBUM_DOES_NOT_EXIST = "This album doesn't exist.",
   INVALID_PASSWORD = 'The old passord is invalid.',
+  DOES_NOT_EXIST_IN_FAVORITES = 'Does not exist in the favorites.',
 }

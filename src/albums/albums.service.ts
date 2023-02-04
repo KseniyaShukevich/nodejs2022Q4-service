@@ -44,9 +44,11 @@ export class AlbumService {
   async setToNullInAlbums(key: keyof Album, value: any) {
     const albums = await this.albumRepository.findAll(key, value);
 
-    albums.forEach(async (album) => {
-      await this.albumRepository.update(album.id, { ...album, [key]: null });
-    });
+    await Promise.all(
+      albums.map((album) =>
+        this.albumRepository.update(album.id, { ...album, [key]: null }),
+      ),
+    );
   }
 
   async createAlbum(dto: AlbumDto) {

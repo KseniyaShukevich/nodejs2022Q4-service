@@ -41,12 +41,27 @@ export class TrackService {
     return track;
   }
 
+  async validateTrackId(id: string) {
+    const track = await this.trackRepository.findById(id);
+
+    if (!track) {
+      throw new HttpException(
+        ERROR_MESSAGE.TRACK_DOES_NOT_EXIST,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    return track;
+  }
+
   async setToNullInTracks(key: keyof Track, value: any) {
     const tracks = await this.trackRepository.findAll(key, value);
 
-    tracks.forEach(async (track) => {
-      await this.trackRepository.update(track.id, { ...track, [key]: null });
-    });
+    await Promise.all(
+      tracks.map((track) =>
+        this.trackRepository.update(track.id, { ...track, [key]: null }),
+      ),
+    );
   }
 
   async createTrack(dto: TrackDto) {
