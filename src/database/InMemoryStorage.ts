@@ -1,7 +1,7 @@
 class InMemoryStorage<T> {
-  private items: Array<T> = [];
+  private items: T[] = [];
 
-  public async getAll(): Promise<Array<T>> {
+  public async getAll(): Promise<T[]> {
     return this.items;
   }
 
@@ -9,6 +9,12 @@ class InMemoryStorage<T> {
     const findedItem = this.items.find((item) => item[key] === value);
 
     return findedItem;
+  }
+
+  public async findAll(key: keyof T, value: any): Promise<T[] | undefined> {
+    const findedItems = this.items.filter((item) => item[key] === value);
+
+    return findedItems;
   }
 
   public async add(item: T): Promise<void> {

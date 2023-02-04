@@ -1,11 +1,22 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { ArtistRepository } from './artists.repository';
 import { ERROR_MESSAGE } from 'src/errors/errors.message';
 import { ArtistDto } from './dto/artist.dto';
+import { TrackService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class ArtistService {
-  constructor(private artistRepository: ArtistRepository) {}
+  constructor(
+    private artistRepository: ArtistRepository,
+    @Inject(forwardRef(() => TrackService))
+    private trackService: TrackService,
+  ) {}
 
   async getArtists() {
     const artists = await this.artistRepository.getAll();
@@ -33,9 +44,9 @@ export class ArtistService {
   }
 
   async updateArtist(id: string, dto: ArtistDto) {
-    const findedUser = await this.artistRepository.findById(id);
+    const findedArtist = await this.artistRepository.findById(id);
 
-    if (!findedUser) {
+    if (!findedArtist) {
       throw new HttpException(
         ERROR_MESSAGE.ARTIST_DOES_NOT_EXIST,
         HttpStatus.NOT_FOUND,
@@ -43,6 +54,19 @@ export class ArtistService {
     }
 
     const artist = await this.artistRepository.update(id, dto);
+
+    return artist;
+  }
+
+  async validateArtistId(id: string) {
+    const artist = await this.artistRepository.findById(id);
+
+    if (!artist) {
+      throw new HttpException(
+        ERROR_MESSAGE.ARTIST_DOES_NOT_EXIST,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
 
     return artist;
   }
@@ -56,5 +80,7 @@ export class ArtistService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    await this.trackService.deleteArtistInTracks(artist.id);
   }
 }
