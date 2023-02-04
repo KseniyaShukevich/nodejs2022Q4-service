@@ -9,6 +9,8 @@ import { TrackRepository } from './tracks.repository';
 import { ERROR_MESSAGE } from 'src/errors/errors.message';
 import { TrackDto } from './dto/track.dto';
 import { ArtistService } from 'src/artists/artists.service';
+import { AlbumService } from 'src/albums/albums.service';
+import { Track } from './tracks.model';
 
 @Injectable()
 export class TrackService {
@@ -16,6 +18,8 @@ export class TrackService {
     private trackRepository: TrackRepository,
     @Inject(forwardRef(() => ArtistService))
     private artistService: ArtistService,
+    @Inject(forwardRef(() => AlbumService))
+    private albumService: AlbumService,
   ) {}
 
   async getTracks() {
@@ -37,17 +41,21 @@ export class TrackService {
     return track;
   }
 
-  async deleteArtistInTracks(id: string) {
-    const tracks = await this.trackRepository.findAll('artistId', id);
+  async setToNullInTracks(key: keyof Track, value: any) {
+    const tracks = await this.trackRepository.findAll(key, value);
 
     tracks.forEach(async (track) => {
-      await this.trackRepository.update(track.id, { ...track, artistId: null });
+      await this.trackRepository.update(track.id, { ...track, [key]: null });
     });
   }
 
   async createTrack(dto: TrackDto) {
     if (dto.artistId) {
       await this.artistService.validateArtistId(dto.artistId);
+    }
+
+    if (dto.albumId) {
+      await this.albumService.validateAlbumId(dto.albumId);
     }
 
     const track = await this.trackRepository.create(dto);
@@ -67,6 +75,10 @@ export class TrackService {
 
     if (dto.artistId) {
       await this.artistService.validateArtistId(dto.artistId);
+    }
+
+    if (dto.albumId) {
+      await this.albumService.validateAlbumId(dto.albumId);
     }
 
     const track = await this.trackRepository.update(id, dto);

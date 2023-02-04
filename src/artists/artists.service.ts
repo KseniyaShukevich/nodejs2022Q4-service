@@ -9,6 +9,7 @@ import { ArtistRepository } from './artists.repository';
 import { ERROR_MESSAGE } from 'src/errors/errors.message';
 import { ArtistDto } from './dto/artist.dto';
 import { TrackService } from 'src/tracks/tracks.service';
+import { AlbumService } from 'src/albums/albums.service';
 
 @Injectable()
 export class ArtistService {
@@ -16,6 +17,8 @@ export class ArtistService {
     private artistRepository: ArtistRepository,
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
+    @Inject(forwardRef(() => AlbumService))
+    private albumService: AlbumService,
   ) {}
 
   async getArtists() {
@@ -81,6 +84,7 @@ export class ArtistService {
       );
     }
 
-    await this.trackService.deleteArtistInTracks(artist.id);
+    await this.trackService.setToNullInTracks('artistId', artist.id);
+    await this.albumService.setToNullInAlbums('artistId', artist.id);
   }
 }

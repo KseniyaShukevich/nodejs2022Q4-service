@@ -41,9 +41,9 @@ export class TrackRepository {
     key: keyof Track,
     value: any,
   ): Promise<Track[] | undefined> {
-    const artists = await this.database.findAll(key, value);
+    const tracks = await this.database.findAll(key, value);
 
-    return artists;
+    return tracks;
   }
 
   public async update(
