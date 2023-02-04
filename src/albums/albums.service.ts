@@ -11,6 +11,7 @@ import { TrackService } from 'src/tracks/tracks.service';
 import { AlbumDto } from './dto/album.dto';
 import { Album } from './albums.model';
 import { ArtistService } from 'src/artists/artists.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class AlbumService {
@@ -20,6 +21,8 @@ export class AlbumService {
     private trackService: TrackService,
     @Inject(forwardRef(() => ArtistService))
     private artistService: ArtistService,
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
   ) {}
 
   async getAlbums() {
@@ -103,6 +106,7 @@ export class AlbumService {
       );
     }
 
-    await this.trackService.setToNullInTracks('albumId', album.id);
+    await this.trackService.setToNullInTracks('albumId', id);
+    await this.favoritesService.clearFavorites('albums', id);
   }
 }

@@ -80,4 +80,10 @@ export class FavoritesService {
 
     favorites[key] = favorites[key].filter((item) => item !== id);
   }
+
+  async clearFavorites(key: keyof Favorites, id: string) {
+    const [favorites] = await this.favoritesRepository.getAll();
+
+    favorites[key] = favorites[key].filter((item) => item !== id);
+  }
 }

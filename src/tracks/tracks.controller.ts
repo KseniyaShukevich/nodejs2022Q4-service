@@ -14,7 +14,7 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { TrackDto } from './dto/track.dto';
 import { TrackService } from './tracks.service';
 
-@Controller('/api')
+@Controller()
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 

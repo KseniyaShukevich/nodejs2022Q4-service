@@ -14,7 +14,7 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { ArtistService } from './artists.service';
 import { ArtistDto } from './dto/artist.dto';
 
-@Controller('/api')
+@Controller()
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 

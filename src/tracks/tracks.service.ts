@@ -11,6 +11,7 @@ import { TrackDto } from './dto/track.dto';
 import { ArtistService } from 'src/artists/artists.service';
 import { AlbumService } from 'src/albums/albums.service';
 import { Track } from './tracks.model';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class TrackService {
@@ -20,6 +21,8 @@ export class TrackService {
     private artistService: ArtistService,
     @Inject(forwardRef(() => AlbumService))
     private albumService: AlbumService,
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
   ) {}
 
   async getTracks() {
@@ -110,5 +113,7 @@ export class TrackService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    await this.favoritesService.clearFavorites('tracks', id);
   }
 }

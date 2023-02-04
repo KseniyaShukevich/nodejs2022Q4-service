@@ -14,7 +14,7 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { AlbumService } from './albums.service';
 import { AlbumDto } from './dto/album.dto';
 
-@Controller('/api')
+@Controller()
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 

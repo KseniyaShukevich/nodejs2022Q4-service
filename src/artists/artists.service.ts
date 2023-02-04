@@ -10,6 +10,7 @@ import { ERROR_MESSAGE } from 'src/errors/errors.message';
 import { ArtistDto } from './dto/artist.dto';
 import { TrackService } from 'src/tracks/tracks.service';
 import { AlbumService } from 'src/albums/albums.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class ArtistService {
@@ -19,6 +20,8 @@ export class ArtistService {
     private trackService: TrackService,
     @Inject(forwardRef(() => AlbumService))
     private albumService: AlbumService,
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
   ) {}
 
   async getArtists() {
@@ -84,7 +87,8 @@ export class ArtistService {
       );
     }
 
-    await this.trackService.setToNullInTracks('artistId', artist.id);
-    await this.albumService.setToNullInAlbums('artistId', artist.id);
+    await this.trackService.setToNullInTracks('artistId', id);
+    await this.albumService.setToNullInAlbums('artistId', id);
+    await this.favoritesService.clearFavorites('artists', id);
   }
 }
