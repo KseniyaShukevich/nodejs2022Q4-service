@@ -57,6 +57,7 @@ export class UserRepository {
       findedUser.createdAt,
       Date.now(),
     );
+
     const user = await this.database.update('id', id, userUpdated);
 
     return user;
