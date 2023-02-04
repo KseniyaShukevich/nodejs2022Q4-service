@@ -3,18 +3,21 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './users.repository';
 import { ERROR_MESSAGE } from 'src/errors/errors.message';
+import { getUserResponseFormat } from './response/users-response.formatter';
+import { UserResponse } from './response/users-response.interface';
 
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  async getUsers() {
+  async getUsers(): Promise<UserResponse[]> {
     const users = await this.userRepository.getAll();
+    const formattedUsers = users.map((user) => getUserResponseFormat(user));
 
-    return users;
+    return formattedUsers;
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: string): Promise<UserResponse> {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
@@ -24,16 +27,16 @@ export class UserService {
       );
     }
 
-    return user;
+    return getUserResponseFormat(user);
   }
 
-  async createUser(dto: CreateUserDto) {
+  async createUser(dto: CreateUserDto): Promise<UserResponse> {
     const user = await this.userRepository.create(dto);
 
-    return user;
+    return getUserResponseFormat(user);
   }
 
-  async updateUser(id: string, dto: UpdateUserDto) {
+  async updateUser(id: string, dto: UpdateUserDto): Promise<UserResponse> {
     const findedUser = await this.userRepository.findById(id);
 
     if (!findedUser) {
@@ -52,10 +55,10 @@ export class UserService {
 
     const user = await this.userRepository.update(id, dto);
 
-    return user;
+    return getUserResponseFormat(user);
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: string): Promise<void> {
     const user = await this.userRepository.delete(id);
 
     if (!user) {
